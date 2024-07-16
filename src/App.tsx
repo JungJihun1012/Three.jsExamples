@@ -1,49 +1,8 @@
-import * as THREE from 'three';
 import { Canvas } from '@react-three/fiber';
-import { useGLTF, Center, OrbitControls, AccumulativeShadows, RandomizedLight, useEnvironment, Environment, MeshReflectorMaterial } from '@react-three/drei';
+import {  Center, OrbitControls, AccumulativeShadows, RandomizedLight, useEnvironment, Environment,} from '@react-three/drei';
 import { EffectComposer, Bloom, N8AO, ToneMapping } from '@react-three/postprocessing';
 import { useControls } from 'leva';
-import { GLTF } from 'three-stdlib';
-
-// 타입 정의
-interface GLTFResult extends GLTF {
-  nodes: {
-    mesh_0: THREE.Mesh;
-    mesh_4: THREE.InstancedMesh;
-    mesh_9: THREE.Mesh;
-  };
-  materials: {
-    WhiteMetal: THREE.Material;
-  };
-}
-
-interface RingProps {
-  frame: string;
-  diamonds: string;
-  env: THREE.Texture | null;
-  [key: string]: any;
-}
-
-const Ring: React.FC<RingProps> = ({ frame, diamonds, env, ...props }) => {
-  const { nodes, materials } = useGLTF('/3-stone-transformed.glb') as GLTFResult;
-  return (
-    <group {...props} dispose={null}>
-      <mesh castShadow geometry={nodes.mesh_0.geometry}>
-        <meshStandardMaterial color={frame} roughness={0.15} metalness={1} envMapIntensity={1.5} />
-      </mesh>
-      <mesh castShadow geometry={nodes.mesh_9.geometry} material={materials.WhiteMetal} />
-      <instancedMesh castShadow args={[nodes.mesh_4.geometry, undefined, 65]} instanceMatrix={nodes.mesh_4.instanceMatrix}>
-        <MeshReflectorMaterial 
-          color={diamonds} 
-          side={THREE.DoubleSide} 
-          envMap={env} 
-          toneMapped={false} 
-          mirror={0.75}  // 필수 속성 추가
-        />
-      </instancedMesh>
-    </group>
-  );
-};
+import Ring from './components/Ring';
 
 const App: React.FC = () => {
   const { shadow, frame, diamonds } = useControls({ shadow: '#000000', frame: '#fff0f0', diamonds: '#ffffff' });
